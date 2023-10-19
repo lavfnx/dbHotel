@@ -4,11 +4,24 @@ show databases;
 /* criar um novo banco */
 create database dbHotel;
 
-/* detrmina onde a tabela está sendo criada */
+/* detrmina onde a tabela está sendo criada e selecionar o banco */
 use dbHotel;
 
 /* exclui a tabela*/
 drop table funcionarios;
+
+/* adicionar o campo email á tabela funcionarios */
+alter table funcionarios add column email varchar(50) not null;
+
+/* modificar o campo email para que se torne obrigatório, não nulo (not null) */
+alter table funcionarios modify column email varchar(50) not null;
+
+/* excluir um campo da tabela */
+alter table funcionarios drop column email;
+
+/* reposicionar o campo email para que elee fique após o login */
+alter table funcionarios modify column email varchar(50) not null after login;
+
 
 /* criar uma nova tabela */
 create table funcionarios (
@@ -33,7 +46,6 @@ show tables;
 /* descreve os campos da tabela funcionarios */
 describe funcionarios;
 
-
 /* CREATE */
 /* inserir um novo usuário, com nome, login, senha criptografada e cargo */
 insert into funcionarios(nomeFunc, login, senha, cargo) values ("Administrador","admin", md5("admin"), "Administrador"); 
@@ -47,8 +59,20 @@ insert into funcionarios(nomeFunc, login, senha) values ("Fellipe Coelho", "fell
 /* ler/buscar as informações da tabela funcionários */
 select * from funcionarios;
 
+
+/* Buscar login e a senha da tabela funcionarios em que logins eja admin e senha seja admin */
+select login as Login, senha from funcionarios where login = "admin" and senha = md5("admin");
+
 /* UPDATE */
 /* atualizar o campo login na tabela funcionarios especificando o id */
 update funcionarios set login = "fellipecoelho" where idFunc = 6;
 
 update funcionarios set cargo = "Gerência" where idFunc = 4;
+
+/* atualizar a tabela funcionários adicionando email a cada um dos funcionários cadastrados */
+update funcionarios set email = "pamellapereto@gmail.com" where idFunc = 2;
+update funcionarios set email = "brenosilva@gmail.com" where idFunc = 3;
+update funcionarios set email = "victoriacardoso@gmail.com" where idFunc = 4;
+update funcionarios set email = "lauralopes@gmail.com" where idFunc = 5;
+update funcionarios set email = "fellipecoelho@gmail.com" where idFunc = 6;
+
