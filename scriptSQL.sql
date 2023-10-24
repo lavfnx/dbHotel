@@ -123,12 +123,13 @@ alter table quartos add column cafeDaManha char(3) not null after preco;
 alter table quartos add column foto varchar(255) not null after descricao;
 
 insert into quartos (andar, numeroQuarto, tipoQuarto, ocupacaoMax, situacao, nome, descricao, foto, preco, cafeDaManha, tipoCama, varanda) values ("5°", "505", "Superoior Premier", "3", "não", "Familiar", "O quarto de 42m² com piso frio, varanda - Vista para o mar. Oferece ar-condicionado inidvidual, TV LCD 42, wi-fi grátis, cofre digital, frigobar abastecido e banheiro com secador de cabelo", " ", 750.90, "sim", "Queen size", "sim");
-insert into quartos (andar, numeroQuarto, tipoQuarto, ocupacaoMax, situacao, nome, descricao, foto, preco, cafeDaManha, tipoCama, varanda) values ("4°", "402", "Suíte Casal", "2", "sim", "Familiar", "O quarto de 32m² com piso frio, varanda - Vista para o mar. Oferece ar-condicionado inidvidual, wi-fi grátis, frigobar abastecido e banheiro com secador de cabelo", " ", 680.90, "sim", "Queen size", "sim");
-insert into quartos (andar, numeroQuarto, tipoQuarto, ocupacaoMax, situacao, nome, descricao, foto, preco, cafeDaManha, tipoCama, varanda) values ("3°", "320", "Suíte Solitário", "1", "sim", "Familiar", "O quarto de 34m², varanda - Vista para o mar. Oferece ar-condicionado, wi-fi grátis, frigobar abastecido e banheiro com hidromassagem", "https://www.hotelunique.com/wp-content/uploads/2019/04/053_Hotel-Unique_Standard-e1555526412538-571x718.jpg", 560.90, "não", "Queen size", "sim");
 
+insert into quartos (andar, numeroQuarto, tipoQuarto, ocupacaoMax, situacao, nome, descricao, foto, preco, cafeDaManha, tipoCama, varanda) values ("4°", "402", "Suíte Casal", "2", "sim", "Familiar", "O quarto de 32m² com piso frio, varanda - Vista para o mar. Oferece ar-condicionado, wi-fi grátis, frigobar abastecido e banheiro com hidromassagem", "https://www.hotelgarance.com/_novaimg/galleria/342681.jpg", 820.90, "sim", "Queen size", "sim");
+insert into quartos (andar, numeroQuarto, tipoQuarto, ocupacaoMax, situacao, nome, descricao, foto, preco, cafeDaManha, tipoCama, varanda) values ("3°", "320", "Suíte Solitário", "1", "sim", "Familiar", "O quarto de 34m², varanda - Vista para o mar. Oferece ar-condicionado, wi-fi grátis, frigobar abastecido e banheiro com secador de cabelo", "https://www.hotelunique.com/wp-content/uploads/2019/04/053_Hotel-Unique_Standard-e1555526412538-571x718.jpg", 490.90, "não", "Queen size", "sim");
+insert into quartos (andar, numeroQuarto, tipoQuarto, ocupacaoMax, situacao, nome, descricao, foto, preco, cafeDaManha, tipoCama, varanda) values ("4°", "413", "Suíte Casal", "2", "não", "Familiar", "O quarto de 36m², varanda - Vista para o mar. Oferece ar-condicionado individual, wi-fi grátis, frigobar abastecido e banheiro com secador de cabelo", "https://www.hplus.com.br/wp-content/uploads/2019/08/quarto-luxo-hotel-fusion-hplus-em-brasilia-13.jpg", 690.90, "sim", "Queen size", "sim");
 
-update quartos set cafeDaManha = "sim" where idQuarto = 1;
-update quartos set foto = "https://www.hotelunique.com/wp-content/uploads/2019/04/053_Hotel-Unique_Standard-e1555526412538-571x718.jpg " where idQuarto = 1;
+update quartos set cafeDaManha = "sim" where idQuarto = 7;
+update quartos set foto = "https://www.hotelunique.com/wp-content/uploads/2019/04/053_Hotel-Unique_Standard-e1555526412538-571x718.jpg " where idQuarto = 7;
 
 select * from quartos;
 
@@ -138,7 +139,7 @@ select * from quartos where varanda = "sim" and cafeDaManha = "sim" and situacao
 select * from quartos where preco <700 and situacao = "não";
 select * from quartos where situacao = "não" order by preco asc;
 
-delete from quartos where idQuarto = 5;
+delete from quartos where idQuarto = 7;
 
 create table clientes (
 idCliente int primary key auto_increment,
@@ -155,7 +156,34 @@ checkout datetime not null,
 idQuarto int not null,
 foreign key (idQuarto) references quartos (idQuarto)
 );
+alter table clientes add column email varchar(50) unique after rg;
 
 describe clientes;
 
+/* verififcar quartos disponíveis */
+select * from quartos where situacao = "não";
+
+insert into clientes (nome, cpf, rg, email, celular, numeroCartao, nomeTitular, validade, cvv, checkin, checkout, idQuarto) values 
+("José de Assis", "829.942.570-09", "48.353.888-7", "josedeassis@gmail.com", "(96) 99338-2803", "5526 4863 8286 2543", "José de Assis", "2025-03-31", "452", "2023-11-02 14:00:00", "2023-11-05 14:00:00", 7);
+
+insert into clientes (nome, cpf, rg, email, celular, numeroCartao, nomeTitular, validade, cvv, checkin, checkout, idQuarto) values 
+("Victória Cardoso", "863.923.231-56", "43.879.433-1", "victoriacardoso@gmail.com", "(11) 93690-8421", "5357 6742 2356 5467", "Victória Cardoso", "2025-03-31", "452", "2023-11-04 14:00:00", "2023-11-07 14:00:00", 9);
+
+select * from clientes;
+
+/* Buscar todas as informações da tabela quartos que está vinculada a tabela clientes pelo campo idQuarto */
+select * from quartos inner join clientes
+on quartos.idQuarto = clientes.idQuarto;
+
+/* Buscar o nome completo e o celular do cliente que alugou o quarto de número 505, pois a tabela quartos está vinculada a tabela clientes pelo campo idQuarto */
+select clientes.nome, clientes.celular
+from quartos inner join clientes on quartos.idQuarto = clientes.idQuarto where numeroQuarto = 505;
+
+/* Buscar o nome completo e data/horário do checkout do cliente que alugou o quarto de número 505*/
+select clientes.nome, clientes.checkout from quartos inner join clientes on quartos.idQuarto = clientes.idQuarto where numeroQuarto = 505;
+
+select clientes.nome as Nome, date_format(clientes.checkout,'%d%m%Y - %H:%i') as Checkout from quartos inner join clientes
+on quartos.idQuarto = clientes.idQuarto where numeroQuarto = 505;
+
+/* ATIVIDADE AVALIATIVA */
 
