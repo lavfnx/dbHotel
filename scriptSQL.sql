@@ -161,11 +161,11 @@ describe clientes;
 /* verififcar quartos disponíveis */
 select * from quartos where situacao = "não";
 
-insert into clientes (nome, cpf, rg, email, celular, numeroCartao, nomeTitular, validade, cvv, checkin, checkout) values 
-("José de Assis", "829.942.570-09", "48.353.888-7", "josedeassis@gmail.com", "(96) 99338-2803", "5526 4863 8286 2543", "José de Assis", "2025-03-31", "452", "2023-11-02 14:00:00", "2023-11-05 14:00:00");
+insert into clientes (nome, cpf, rg, email, celular) values 
+("José de Assis", "829.942.570-09", "48.353.888-7", "josedeassis@gmail.com", "(96) 99338-2803");
 
-insert into clientes (nome, cpf, rg, email, celular, numeroCartao, nomeTitular, validade, cvv, checkin, checkout) values 
-("Victória Cardoso", "863.923.231-56", "43.879.433-1", "victoriacardoso@gmail.com", "(11) 93690-8421", "5357 6742 2356 5467", "Victória Cardoso", "2025-03-31", "452", "2023-11-04 14:00:00", "2023-11-07 14:00:00");
+insert into clientes (nome, cpf, rg, email, celular) values 
+("Victória Cardoso", "863.923.231-56", "43.879.433-1", "victoriacardoso@gmail.com", "(11) 93690-8421");
 
 select * from clientes;
 
@@ -201,6 +201,9 @@ insert into pedidos (statusPedido, idCliente) values ("Finalizado", 2);
 
 select * from pedidos;
 
+select * from pedidos inner join clientes on pedidos.idCliente = clientes.idCliente;
+
+
 create table reservas (
 	idReserva int primary key auto_increment,
     idPedido int not null,
@@ -209,9 +212,19 @@ create table reservas (
     foreign key(idQuarto) references quartos(idQuarto)
 );
 
-describe pedidos;
+alter table reservas add column checkin datetime not null;
+alter table reservas add column checkout datetime not null;
 
-/* ATIVIDADE AVALIATIVA */
+select * from reservas;
+insert into reservas (idPedido, idQuarto, checkin, checkout) values (1, 7, "2023-11-02 14:00:00", "2023-11-05 14:00:00"); 
+insert into reservas (idPedido, idQuarto, checkin, checkout) values (1, 9, "2023-11-02 14:00:00", "2023-11-05 14:00:00";
+
+select reservas.idReserva, pedidos.idPedido, quartos.idQuarto, quartos.nome, quartos.andar, quartos.numeroQuarto
+from (reservas inner join pedidos on reservas.idPedido = pedidos.idPedido)
+inner join quartos on reservas.idQuarto = quartos.idQuarto; 
+
+
+select * from reservas;
 
 
 
