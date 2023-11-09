@@ -104,8 +104,6 @@ select * from pedidos;
 select * from pedidos inner join clientes on pedidos.idCliente = clientes.idCliente;
 
 
-
-
 create table reservas (
 	idReserva int primary key auto_increment,
     idPedido int not null,
@@ -119,10 +117,22 @@ create table reservas (
 describe reservas;
 
 insert into reservas (idPedido, idQuarto, checkin, checkout) values (1, 7, "2023-11-02 14:00:00", "2023-11-05 14:00:00"); 
-insert into reservas (idPedido, idQuarto, checkin, checkout) values (1, 9, "2023-11-02 14:00:00", "2023-11-05 14:00:00";
+insert into reservas (idPedido, idQuarto, checkin, checkout) values (1, 9, "2023-11-02 14:00:00", "2023-11-05 14:00:00");
+insert into reservas (idPedido, idQuarto, checkin, checkout) values (2, 10, "2023-10-17 16:00:00", "2023-10-21 16:00:00");
 
 select * from reservas;
 
 select reservas.idReserva, pedidos.idPedido, quartos.idQuarto, quartos.nome, quartos.andar, quartos.numeroQuarto
 from (reservas inner join pedidos on reservas.idPedido = pedidos.idPedido)
 inner join quartos on reservas.idQuarto = quartos.idQuarto; 
+
+/*OBJETIVO: selecionar o nome do cliente, seu cpf e email, o id do pedido do cliente, e data do pedido, 
+ quais quartos fazem parte desse pedido, os tipos dos quartos e seus nomes assim como os anadares em que estão, os números de cada quarto, seus preços e suas datas de checkin e checkout. */
+
+select clientes.nome, clientes.cpf, clientes.email, pedidos.idPedido, pedidos.dataPedido, quartos.tipoQuarto, quartos.nome, quartos.andar, quartos.numeroQuarto, quartos.preco, reservas.checkin, reservas.checkout from 
+clientes inner join pedidos on clientes.idCliente = pedidos.idCliente inner join
+reservas on reservas.idPedido = pedidos.idPedido inner join quartos
+on reservas.idQuarto = quartos.idQuarto;
+
+/* soma total do pedido feito pela cliente Victória */
+select sum(quartos.preco) as Total from reservas inner join quartos on reservas.idQuarto = quartos.idQuarto where idPedido =2;
