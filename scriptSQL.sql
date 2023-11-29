@@ -54,7 +54,9 @@ tipoCama varchar(20),
 varanda char(3)
 );
 
+
 describe quartos;
+
 
 insert into quartos (andar, numeroQuarto, tipoQuarto, ocupacaoMax, situacao, nome, descricao, foto, preco, cafeDaManha, precoCafe, tipoCama, varanda) values ("5°", "505", "Superoior Premier", "3", "não", "Familiar", "O quarto de 42m² com piso frio, varanda - Vista para o mar. Oferece ar-condicionado inidvidual, TV LCD 42, wi-fi grátis, cofre digital, frigobar abastecido e banheiro com secador de cabelo", "https://www.hotelunique.com/wp-content/uploads/2019/04/053_Hotel-Unique_Standard-e1555526412538-571x718.jpg", 750.90, "sim", 60.00, "Queen size", "sim");
 insert into quartos (andar, numeroQuarto, tipoQuarto, ocupacaoMax, situacao, nome, descricao, foto, preco, cafeDaManha, precoCafe, tipoCama, varanda) values ("4°", "402", "Suíte Casal", "2", "sim", "Familiar", "O quarto de 32m² com piso frio, varanda - Vista para o mar. Oferece ar-condicionado, wi-fi grátis, frigobar abastecido e banheiro com hidromassagem", "https://www.hotelgarance.com/_novaimg/galleria/342681.jpg", 820.90, "sim", 60.00, "Queen size", "sim");
@@ -122,7 +124,7 @@ insert into reservas (idPedido, idQuarto, checkin, checkout) values (2, 10, "202
 
 select * from reservas;
 
-select reservas.idReserva, pedidos.idPedido, quartos.idQuarto, quartos.nome, quartos.andar, quartos.numeroQuarto
+select reservas.idReserva, pedidos.idPedido, quartos.idQuarto, quartos.tipoQuarto, nome, quartos.andar, quartos.numeroQuarto
 from (reservas inner join pedidos on reservas.idPedido = pedidos.idPedido)
 inner join quartos on reservas.idQuarto = quartos.idQuarto; 
 
@@ -136,3 +138,26 @@ on reservas.idQuarto = quartos.idQuarto;
 
 /* soma total do pedido feito pela cliente Victória */
 select sum(quartos.preco) as Total from reservas inner join quartos on reservas.idQuarto = quartos.idQuarto where idPedido =2;
+
+/* Buscar o nome do cliente, andar, número do quarto e checkout somente daqueles cuja data do checkout 
+já passou ou é igual a data do sistema */
+select clientes.nome, quartos.andar, quartos.numeroQuarto, reservas.checkout from 
+clientes inner join pedidos on pedidos.idCliente = clientes.idCliente inner join
+reservas on reservas.idPedido = pedidos.idPedido inner join
+quartos on reservas.idQuarto = quartos.idQuarto where reservas.checkout <= current_timestamp();
+
+/* atulizar a disponibilidade do quarto somente daqueles cuja data do checkout já passou ou é igual à data do sistema */
+update reservas inner join quartos on reservas.idQuarto = quartos.idQuarto
+set quartos.disponibilidade = "sim"
+where reservas.checkout < current_timestamp();
+
+
+/* buscar o nome do cliente, andar, número do quarto, checkout (com data formatada em 99/99/9999) e
+o cálculo de quantos dias faltam para a reserva do cliente encerrar (dia restantes = data do checkout - data atual) */
+select clientes.nome, quartos.andar, quartos.numeroQuarto,
+date_format(reservas.checkout, '%d/%m/%Y') as checkout, datediff(reservas.checkout, curdate()) as dias_restantes
+from clientes inner join pedidos on pedidos.idCliente = clientes.idCliente inner join
+reservas on reservas.idPedido = pedidos.idPedido inner join
+quartos on reservas.idQuarto = quartos.idQuarto where reservas.checkout > current_timestamp();
+
+
